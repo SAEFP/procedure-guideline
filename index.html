@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Procedure Guideline – Flipbook</title>
+
+  <!-- StPageFlip CSS from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/page-flip/dist/page-flip.css" />
+
+  <style>
+    /* Make the flipbook responsive */
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    .container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background:#f6f7fb; }
+    #flipbook { width: min(900px, 95vw); height: calc(min(900px, 95vw) * 0.70); }
+    /* Optional toolbar */
+    .toolbar { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); display:flex; gap:.5rem; }
+    button { padding: .5rem .75rem; border: 1px solid #ddd; background:#fff; border-radius: 6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="prev">⟵ Prev</button>
+    <button id="next">Next ⟶</button>
+    <button id="zoomIn">Zoom +</button>
+    <button id="zoomOut">Zoom −</button>
+  </div>
+
+  <div class="container">
+    <div id="flipbook"></div>
+  </div>
+
+  <!-- StPageFlip JS from CDN -->
+  <script src="https://unpkg.com/page-flip/dist/page-flip.browser.min.js"></script>
+  <script>
+    // List your page images here in order:
+    const pages = [
+      "pages/page-1.png",
+      "pages/page-2.png",
+      // "pages/page-3.png",
+      // ...
+    ];
+
+    // Create flipbook
+    const el = document.getElementById("flipbook");
+    const flip = new St.PageFlip(el, {
+      width: 800,     // base page width (px)
+      height: 560,    // base page height (px)
+      size: "stretch", // scales responsively
+      minWidth: 315,
+      maxWidth: 2000,
+      minHeight: 420,
+      maxHeight: 2700,
+      maxShadowOpacity: 0.2,
+      showCover: true,
+      mobileScrollSupport: true
+    });
+
+    // Build pages
+    const items = pages.map(src => ({
+      type: "image",
+      src
+    }));
+
+    flip.loadFromImages(items.map(i => i.src));
+
+    // Toolbar controls
+    document.getElementById("prev").onclick = () => flip.flipPrev();
+    document.getElementById("next").onclick = () => flip.flipNext();
+    document.getElementById("zoomIn").onclick = () => flip.updateOrientation(flip.state.settings.width + 100, flip.state.settings.height + 70);
+    document.getElementById("zoomOut").onclick = () => flip.updateOrientation(Math.max(400, flip.state.settings.width - 100), Math.max(280, flip.state.settings.height - 70));
+
+    // Optional keyboard nav
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") flip.flipPrev();
+      if (e.key === "ArrowRight") flip.flipNext();
+    });
+  </script>
+</body>
+</html>
